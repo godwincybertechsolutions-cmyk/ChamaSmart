@@ -36,19 +36,18 @@ const buttonVariants = cva(
   }
 );
 
+// 👇 omit `onDrag` to avoid conflict with Motion’s onDrag typing
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onDrag">,
     VariantProps<typeof buttonVariants>,
     MotionProps {
   asChild?: boolean;
 }
 
-const MotionButton = motion.create<HTMLButtonElement>("button");
-
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, ...props }, ref) => {
     return (
-      <MotionButton
+      <motion.button
         ref={ref}
         className={cn(buttonVariants({ variant, size, className }))}
         whileTap={{ scale: 0.97 }}
