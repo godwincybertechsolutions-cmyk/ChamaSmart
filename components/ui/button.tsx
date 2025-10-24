@@ -41,27 +41,34 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     variant, 
     size, 
     disableAnimation = false,
+    children,
     ...props 
   }, ref) => {
     
+    // Create the base button element
     const buttonElement = (
       <button
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
-      />
+      >
+        {children}
+      </button>
     );
 
+    // If animations are disabled, return the plain button
     if (disableAnimation) {
       return buttonElement;
     }
 
+    // Otherwise, wrap with motion for animations
     return (
       <motion.div
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         transition={{ duration: 0.1 }}
         className="inline-flex"
+        style={{ display: 'inline-flex' }}
       >
         {buttonElement}
       </motion.div>
