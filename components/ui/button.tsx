@@ -3,7 +3,7 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-import { motion, type MotionProps } from "framer-motion";
+import { motion } from "framer-motion";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-2xl text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
@@ -36,21 +36,20 @@ const buttonVariants = cva(
   }
 );
 
-// 👇 omit `onDrag` to avoid conflict with Motion’s onDrag typing
+// ✅ Use ComponentPropsWithoutRef<typeof motion.button> to merge safely
 export interface ButtonProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onDrag">,
-    VariantProps<typeof buttonVariants>,
-    MotionProps {
+  extends React.ComponentPropsWithoutRef<typeof motion.button>,
+    VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, ...props }, ref) => {
+  ({ className, variant, size, whileTap, ...props }, ref) => {
     return (
       <motion.button
         ref={ref}
         className={cn(buttonVariants({ variant, size, className }))}
-        whileTap={{ scale: 0.97 }}
+        whileTap={whileTap ?? { scale: 0.97 }}
         {...props}
       />
     );
