@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { motion } from "framer-motion";
+import { motion, MotionProps } from "framer-motion";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { Slot } from "@radix-ui/react-slot";
@@ -37,27 +37,40 @@ const buttonVariants = cva(
   }
 );
 
-// ✅ clean type: uses intrinsic button props (no MotionProps mixin)
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onDrag">,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  motionProps?: MotionProps;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, children, ...props }, ref) => {
-    const Comp = asChild ? Slot : motion.button;
+  ({ className, variant, size, asChild = false, motionProps, children, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button";
 
-    return (
+    const buttonElement = (
       <Comp
         ref={ref}
-        whileTap={{ scale: 0.97 }}
-        transition={{ duration: 0.1 }}
         className={cn(buttonVariants({ variant, size, className }))}
         {...props}
       >
         {children}
       </Comp>
+    );
+
+    // Only wrap with motion if not asChild and motionProps are provided
+    if (asChild || !motionProps) {
+      return buttonElement;
+    }
+
+    return (
+      <motion.div
+        whileTap={{ scale: 0.97 }}
+        transition={{ duration: 0.1 }}
+        {...motionProps}
+      >
+        {buttonElement}
+      </motion.div>
     );
   }
 );
