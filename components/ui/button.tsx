@@ -29,11 +29,10 @@ const buttonVariants = cva(
   }
 );
 
-export interface ButtonProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onDrag' | 'onDragStart' | 'onDragEnd' | 'onDragCapture'>,
-    VariantProps<typeof buttonVariants> {
+type BaseButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof buttonVariants>;
+
+export interface ButtonProps extends BaseButtonProps {
   disableAnimation?: boolean;
-  animationType?: 'scale' | 'lift' | 'none';
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -41,50 +40,31 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     className, 
     variant, 
     size, 
-    disableAnimation = false, 
-    animationType = 'scale',
+    disableAnimation = false,
     ...props 
   }, ref) => {
+    
+    // Filter out drag events to prevent conflicts
+    const { onDrag, onDragStart, onDragEnd, onDragCapture, ...filteredProps } = props;
     
     if (disableAnimation) {
       return (
         <button
           className={cn(buttonVariants({ variant, size, className }))}
           ref={ref}
-          {...props}
+          {...filteredProps}
         />
       );
     }
-
-    const animationProps = {
-      scale: {
-        whileHover: { scale: 1.02 },
-        whileTap: { scale: 0.98 }
-      },
-      lift: {
-        whileHover: { 
-          y: -2,
-          boxShadow: '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
-        },
-        whileTap: { 
-          y: 0,
-          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
-        }
-      },
-      none: {}
-    };
 
     return (
       <motion.button
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
-        {...animationProps[animationType]}
-        transition={{ 
-          type: "spring",
-          stiffness: 400,
-          damping: 17
-        }}
-        {...props}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        transition={{ duration: 0.1 }}
+        {...filteredProps}
       />
     );
   }
