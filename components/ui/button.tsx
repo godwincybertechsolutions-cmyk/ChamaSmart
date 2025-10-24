@@ -37,13 +37,12 @@ const buttonVariants = cva(
   }
 );
 
-// ✅ Fixed: Use type intersection instead of interface extension
+// ✅ FIXED: Use type intersection instead of interface extension
 export type ButtonProps = 
-  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onDrag" | "children"> &
+  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onDrag"> &
   VariantProps<typeof buttonVariants> &
   MotionProps & {
     asChild?: boolean;
-    children?: React.ReactNode;
   };
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
