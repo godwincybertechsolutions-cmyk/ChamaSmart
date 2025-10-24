@@ -37,40 +37,29 @@ const buttonVariants = cva(
   }
 );
 
-export interface ButtonProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onDrag">,
-    VariantProps<typeof buttonVariants> {
-  asChild?: boolean;
-  motionProps?: MotionProps;
-}
+// ✅ Fixed: Use type intersection instead of interface extension
+export type ButtonProps = 
+  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onDrag" | "children"> &
+  VariantProps<typeof buttonVariants> &
+  MotionProps & {
+    asChild?: boolean;
+    children?: React.ReactNode;
+  };
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, motionProps, children, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button";
+  ({ className, variant, size, asChild = false, children, ...props }, ref) => {
+    const Comp = asChild ? Slot : motion.button;
 
-    const buttonElement = (
+    return (
       <Comp
         ref={ref}
+        whileTap={{ scale: 0.97 }}
+        transition={{ duration: 0.1 }}
         className={cn(buttonVariants({ variant, size, className }))}
         {...props}
       >
         {children}
       </Comp>
-    );
-
-    // Only wrap with motion if not asChild and motionProps are provided
-    if (asChild || !motionProps) {
-      return buttonElement;
-    }
-
-    return (
-      <motion.div
-        whileTap={{ scale: 0.97 }}
-        transition={{ duration: 0.1 }}
-        {...motionProps}
-      >
-        {buttonElement}
-      </motion.div>
     );
   }
 );
