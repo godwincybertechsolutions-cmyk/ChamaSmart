@@ -29,9 +29,9 @@ const buttonVariants = cva(
   }
 );
 
-type BaseButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof buttonVariants>;
-
-export interface ButtonProps extends BaseButtonProps {
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
   disableAnimation?: boolean;
 }
 
@@ -44,28 +44,27 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ...props 
   }, ref) => {
     
-    // Filter out drag events to prevent conflicts
-    const { onDrag, onDragStart, onDragEnd, onDragCapture, ...filteredProps } = props;
-    
+    const buttonElement = (
+      <button
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
+        {...props}
+      />
+    );
+
     if (disableAnimation) {
-      return (
-        <button
-          className={cn(buttonVariants({ variant, size, className }))}
-          ref={ref}
-          {...filteredProps}
-        />
-      );
+      return buttonElement;
     }
 
     return (
-      <motion.button
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
+      <motion.div
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         transition={{ duration: 0.1 }}
-        {...filteredProps}
-      />
+        className="inline-flex"
+      >
+        {buttonElement}
+      </motion.div>
     );
   }
 );
