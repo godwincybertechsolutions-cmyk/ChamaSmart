@@ -21,23 +21,16 @@ const buttonVariants = cva(
         lg: 'h-11 rounded-md px-8',
         icon: 'h-10 w-10',
       },
-      animation: {
-        default: '',
-        none: '',
-        pulse: 'animate-pulse',
-        bounce: 'animate-bounce',
-      }
     },
     defaultVariants: {
       variant: 'default',
       size: 'default',
-      animation: 'default',
     },
   }
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onDrag' | 'onDragStart' | 'onDragEnd' | 'onDragCapture'>,
     VariantProps<typeof buttonVariants> {
   disableAnimation?: boolean;
   animationType?: 'scale' | 'lift' | 'none';
@@ -48,7 +41,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     className, 
     variant, 
     size, 
-    animation,
     disableAnimation = false, 
     animationType = 'scale',
     ...props 
@@ -57,7 +49,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     if (disableAnimation) {
       return (
         <button
-          className={cn(buttonVariants({ variant, size, animation, className }))}
+          className={cn(buttonVariants({ variant, size, className }))}
           ref={ref}
           {...props}
         />
@@ -84,7 +76,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <motion.button
-        className={cn(buttonVariants({ variant, size, animation, className }))}
+        className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...animationProps[animationType]}
         transition={{ 
