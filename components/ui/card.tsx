@@ -40,6 +40,21 @@ export interface CardProps
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className, variant, interactive, hoverEffect, children, ...props }, ref) => {
+    
+    // Filter out conflicting drag event handlers
+    const {
+      onDrag,
+      onDragStart,
+      onDragEnd,
+      onDragCapture,
+      onAnimationStart,
+      onAnimationEnd,
+      onAnimationIteration,
+      onTransitionEnd,
+      // Rest of safe props
+      ...safeProps
+    } = props;
+
     return (
       <motion.div
         ref={ref}
@@ -48,7 +63,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
         whileHover={hoverEffect ? { scale: 1.02 } : {}}
         transition={{ duration: 0.2, ease: "easeOut" }}
         className={cn(cardVariants({ variant, interactive }), className)}
-        {...props}
+        {...safeProps}
       >
         {children}
       </motion.div>
