@@ -11,16 +11,16 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary-600 text-white hover:bg-primary-700 shadow-md hover:shadow-lg active:scale-[0.98]",
+          "bg-primary text-white hover:bg-primary/90 shadow-sm hover:shadow-lg active:scale-[0.97]",
         destructive:
-          "bg-danger-500 text-white hover:bg-danger-700 active:scale-[0.98]",
+          "bg-red-500 text-white hover:bg-red-600 active:scale-[0.97]",
         outline:
           "border border-neutral-300 bg-white hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800",
         secondary:
           "bg-neutral-200 text-neutral-900 hover:bg-neutral-300 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700",
         ghost:
           "hover:bg-neutral-100 dark:hover:bg-neutral-800 active:scale-[0.98]",
-        link: "text-primary-600 underline-offset-4 hover:underline",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -36,7 +36,7 @@ const buttonVariants = cva(
   }
 );
 
-// ✅ Use ComponentPropsWithoutRef<typeof motion.button> to merge safely
+// ✅ SAFE TYPE MERGE: no MotionProps conflict
 export interface ButtonProps
   extends React.ComponentPropsWithoutRef<typeof motion.button>,
     VariantProps<typeof buttonVariants> {
